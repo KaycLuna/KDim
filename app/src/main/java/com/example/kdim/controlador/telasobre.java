@@ -1,4 +1,4 @@
-package com.example.kdim;
+package com.example.kdim.controlador;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,13 +6,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 
-public class telaajuda extends AppCompatActivity {
+import com.example.kdim.R;
+
+public class telasobre extends AppCompatActivity {
+    private ImageButton botfecharsobre;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_telaajuda);
+        setContentView(R.layout.activity_telasobre);
+        botfecharsobre = (ImageButton) findViewById(R.id.botfecharsobre);
     }
 
 
@@ -36,13 +43,13 @@ public class telaajuda extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent itconfug = new Intent(telaajuda.this, telaconfig.class);
+            Intent itconfug = new Intent(telasobre.this, telaconfig.class);
             startActivity(itconfug);
         }else if (id==R.id.botsobre){
-            Intent itsobre = new Intent(telaajuda.this, telasobre.class);
+            Intent itsobre = new Intent(telasobre.this, telasobre.class);
             startActivity(itsobre);
         }else if (id== R.id.botajuda){
-            Intent itajuda = new Intent(telaajuda.this, telaajuda.class);
+            Intent itajuda = new Intent(telasobre.this, telaajuda.class);
             startActivity(itajuda);
 
         }
@@ -50,4 +57,12 @@ public class telaajuda extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     //fim do menu
+
+
+    public  void fecharsobre (View view){
+
+        finish();
+
+    }
+
 }

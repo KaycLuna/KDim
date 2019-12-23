@@ -1,16 +1,14 @@
-package com.example.kdim;
-import android.content.Context;
+package com.example.kdim.controlador;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,13 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.kdim.database.ScriptDDL;
-import com.example.kdim.database.bdtipoaço;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.kdim.Global;
+import com.example.kdim.R;
+import com.example.kdim.database.AcoHelper;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -43,32 +38,34 @@ public class MainActivity extends AppCompatActivity {
     public double zx=0;
     private SQLiteDatabase conexao;
     private  SQLiteDatabase gravar;
-    private bdtipoaço bdtipoaço;
+    private AcoHelper bdtipoaço;
 
     //conexao bd
-    public void criarConexao(){
+   /* public void criarConexao(){
         try {
 
-            bdtipoaço = new bdtipoaço(this);
-            conexao = bdtipoaço.getWritableDatabase();
-            gravar = bdtipoaço.getWritableDatabase();
+            bdtipoaço = new AcoHelper(getBaseContext());
+            SQLiteDatabase conexao = bdtipoaço.getWritableDatabase();
 
-            //mss de conexao ok
-            Toast toast = Toast.makeText(this, "Conexão Realizada com Sucesso.",Toast.LENGTH_LONG);
-            toast.show();
-            //fim da msg
+            //conexao.execSQL("create table tb_teste(nome text primary key, valor integer);");
+            conexao.execSQL("insert into tb_teste(nome, valor) values ('fisica', 10)");
+            conexao.execSQL("insert into tb_teste(nome, valor) values ('matematica', 54)");
+            conexao.execSQL("insert into tb_teste(nome, valor) values ('portugues', 3)");
 
+            Cursor cursor = conexao.rawQuery("SELECT* FROM tb_teste;", null);
+            while(cursor.moveToNext()) {
+                Log.d("nome", cursor.getString(cursor.getColumnIndex("nome")));
+                Log.d("nome", ""+cursor.getInt(cursor.getColumnIndex("valor")));
+            }
+            cursor.close();
         }catch (SQLException ex){
             AlertDialog.Builder dlg = new AlertDialog.Builder(this);
             dlg.setTitle("Erro");
             dlg.setMessage(ex.getMessage());
             dlg.setNeutralButton("Ok",null);
             dlg.show();
-
         }
-    }
-
-
+    }*/
     // fim banco de daods
 
     @Override
@@ -94,8 +91,11 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         //fim
 
-       criarConexao();
+       //criarConexao();
     }
+
+
+
 
     //inicio do menu
     @Override
@@ -153,8 +153,8 @@ public class MainActivity extends AppCompatActivity {
             global.setZxcalc(zx);
         }
 
-        load.setVisibility(1); //deixando a barra de progresso visivel
-        statusbarra.setVisibility(1); //deixandoo satatus da barra visivel
+        load.setVisibility(View.VISIBLE); //deixando a barra de progresso visivel
+        statusbarra.setVisibility(View.VISIBLE); //deixandoo satatus da barra visivel
 
         // BARRA DE PROGRESSO
         new Thread(new Runnable() {
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                        statusbarra.setText("Concluido.");
-                       continuar01.setVisibility(1);
+                       continuar01.setVisibility(View.VISIBLE);
                     }
                 });
             }

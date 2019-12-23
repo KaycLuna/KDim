@@ -1,34 +1,22 @@
-package com.example.kdim;
+package com.example.kdim.controlador;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.example.kdim.R;
 
-public class telaconfig extends AppCompatActivity {
-    private TextView testeglobal;
-    private ListView listaaços;
-    private List<ScrollView> tipoaçosguerdau;
+public class telaajuda extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_telaconfig);
-        testeglobal = (TextView) findViewById(R.id.testeglobal);
-        Global global = (Global) getApplicationContext();
-        testeglobal.setText(String.valueOf(global.getZxcalc()));
-        listaaços = (ListView) findViewById(R.id.listaaços);
+        setContentView(R.layout.activity_telaajuda);
+    }
 
-        }
 
     //inicio do menu
     @Override
@@ -40,20 +28,23 @@ public class telaconfig extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()){
 
         }
         int id = item.getItemId();
 
+        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent itconfug = new Intent(telaconfig.this, telaconfig.class);
+            Intent itconfug = new Intent(telaajuda.this, telaconfig.class);
             startActivity(itconfug);
         }else if (id==R.id.botsobre){
-            Intent itsobre = new Intent(telaconfig.this, telasobre.class);
+            Intent itsobre = new Intent(telaajuda.this, telasobre.class);
             startActivity(itsobre);
         }else if (id== R.id.botajuda){
-            Intent itajuda = new Intent(telaconfig.this, telaajuda.class);
+            Intent itajuda = new Intent(telaajuda.this, telaajuda.class);
             startActivity(itajuda);
 
         }
