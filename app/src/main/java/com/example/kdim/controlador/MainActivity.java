@@ -1,11 +1,13 @@
 package com.example.kdim.controlador;
+
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.os.Handler;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,58 +15,68 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.example.kdim.Global;
+
 import com.example.kdim.R;
+import com.example.kdim.Util;
+import com.example.kdim.database.AcoDao;
 import com.example.kdim.database.AcoHelper;
 import com.example.kdim.modelo.Aco;
 
 
 public class MainActivity extends AppCompatActivity {
+
     private EditText edtnsd;
-    private  EditText edtmdx;
-    private  EditText edtmdy;
-    private  TextView testezx;
+    private EditText edtmdx;
+    private EditText edtmdy;
+    private TextView testezx;
     private ProgressBar load;
-    private TextView statusbarra ;
+    private TextView statusbarra;
     private int progresso = 0;
     private Handler mHandler = new Handler();
     private Button continuar01;
-    private  Toolbar toolbar;
+    private Toolbar toolbar;
     private double mcalc = 0;
     private MenuItem botsobre;
-    public double zx=0;
+    public double zx = 0;
     private SQLiteDatabase conexao;
-    private  SQLiteDatabase gravar;
+    private SQLiteDatabase gravar;
     private AcoHelper bdtipoaço;
 
-    //conexao bd
-   /* public void criarConexao(){
-        try {
+    /*
+     * Este método é responsável por configurar
+     * os objetos necessários para que a classe
+     * Util possa fornecer os DAOs. Os DAOs
+     * possibilitaram acesso a base de dados.  */
 
-            bdtipoaço = new AcoHelper(getBaseContext());
-            SQLiteDatabase conexao = bdtipoaço.getWritableDatabase();
+    private void initUtil() {
 
-            //conexao.execSQL("create table tb_teste(nome text primary key, valor integer);");
-            conexao.execSQL("insert into tb_teste(nome, valor) values ('fisica', 10)");
-            conexao.execSQL("insert into tb_teste(nome, valor) values ('matematica', 54)");
-            conexao.execSQL("insert into tb_teste(nome, valor) values ('portugues', 3)");
+        Util.initRecursosUtil(getBaseContext());
 
-            Cursor cursor = conexao.rawQuery("SELECT* FROM tb_teste;", null);
-            while(cursor.moveToNext()) {
-                Log.d("nome", cursor.getString(cursor.getColumnIndex("nome")));
-                Log.d("nome", ""+cursor.getInt(cursor.getColumnIndex("valor")));
-            }
-            cursor.close();
-        }catch (SQLException ex){
-            AlertDialog.Builder dlg = new AlertDialog.Builder(this);
-            dlg.setTitle("Erro");
-            dlg.setMessage(ex.getMessage());
-            dlg.setNeutralButton("Ok",null);
-            dlg.show();
-        }
-    }*/
-    // fim banco de daods
+        /*Estou adicionando esse código só para teste*/
+       AcoDao acoDao =  Util.getInstanciaAcoDao();
+       Aco aco = new Aco();
+       aco.setNome("Aço 01");
+       aco.setTensaoDeEscoamento(5.6);
+       aco.setTensaoDeRuptura(3.7);
+
+       /* Estou configurando o nome do aço
+       * só para teste, pois quem vai definir
+       * o nome é o usuário.*/
+       Util.solicitacao.setNomeAco("Aço 01");
+
+       try {
+           acoDao.inserir(aco);
+       } catch(Exception e) {
+           /*Quando o Aço 01 já estiver no banco
+           * ocorrerá um erro, mas tudo bem, estamos
+           * inserindo para teste. O erro será capturado
+           * aqui e não vamos fazer nada, só seguir com
+           * a execução normalmente.
+           *
+           * Atenção: Ocorrerá um erro porque tentaremos inserir
+           * um aço que tem a chave primária repetida.*/
+       }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         //fim
 
-       //criarConexao();
+        initUtil();
     }
 
     //inicio do menu
@@ -105,20 +117,20 @@ public class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
 
         }
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent itconfug = new Intent(MainActivity.this, telaconfig.class);
+            Intent itconfug = new Intent(MainActivity.this, Configuracao.class);
             startActivity(itconfug);
-        }else if (id==R.id.botsobre){
-            Intent itsobre = new Intent(MainActivity.this, telasobre.class);
+        } else if (id == R.id.botsobre) {
+            Intent itsobre = new Intent(MainActivity.this, Sobre.class);
             startActivity(itsobre);
-        }else if (id== R.id.botajuda){
-            Intent itajuda = new Intent(MainActivity.this, telaajuda.class);
+        } else if (id == R.id.botajuda) {
+            Intent itajuda = new Intent(MainActivity.this, Ajuda.class);
             startActivity(itajuda);
 
         }
@@ -128,33 +140,25 @@ public class MainActivity extends AppCompatActivity {
     //fim do menu
 
     // BOTÃO ANALISAR
-    public void analisar(View view){
+    public void analisar(View view) {
+        try {
+            Util.solicitacao.setNds(Double.valueOf(edtnsd.getText().toString()));
+            Util.solicitacao.setMdx(Double.valueOf(edtmdx.getText().toString()));
+            Util.solicitacao.setMdy(Double.valueOf(edtmdy.getText().toString()));
+            executarBarraDeProgresso();
+        } catch (IllegalArgumentException illegalArgumentException) {
+            String mensagem = "O valor deve ser maior ou igual a zero.";
+            if (edtnsd.getText().toString().length() == 0)
+                edtnsd.setError(mensagem);
+            if (edtmdx.getText().toString().length() == 0)
+                edtmdx.setError(mensagem);
+            if (edtmdy.getText().toString().length() == 0)
+                edtmdy.setError(mensagem);
+        }
+    }
+    //FIM BOTÃO ANALISAR
 
-        if( edtmdx.getText().length() != 0 && edtmdy.getText().length()!=0 && edtnsd.getText().length()!=0 ){ //Verifico se todos os campos não estão vazios
-
-        Global global = (Global) getApplicationContext();
-        global.setMdx(Double.valueOf(edtmdx.getText().toString())); //jogo o valor de mdx pra global
-        global.setMdy(Double.valueOf(edtmdy.getText().toString())); //jogo p valor de mdy pra global
-        global.setNsd(Double.valueOf(edtnsd.getText().toString())); // passo o valor de nsd pra global
-
-        /*if (global.getMdx()>=global.getMdy()) {
-            zx = ((global.getMdx() * Math.pow(10, 6)) *global.ya1) / (global.fy * 1000);
-
-            global.setZxcalc(zx);
-            global.setEixomaior("Eixo X");
-
-
-        }else if (global.getMdy()>global.getMdx()){
-
-             zx = ((global.getMdy() * Math.pow(10, 6)) * global.ya1) / (global.fy * 1000);
-
-            global.setZxcalc(zx);
-            global.setEixomaior("Eixo Y");
-
-        }*/
-        Aco aco = new Aco();
-        aco.CalcularZ();
-
+    private void executarBarraDeProgresso() {
         load.setVisibility(View.VISIBLE); //deixando a barra de progresso visivel
         statusbarra.setVisibility(View.VISIBLE); //deixandoo satatus da barra visivel
 
@@ -162,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (progresso< 100){
+                while (progresso < 100) {
                     progresso++;
                     android.os.SystemClock.sleep(10);
                     mHandler.post(new Runnable() {
@@ -175,63 +179,26 @@ public class MainActivity extends AppCompatActivity {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                       statusbarra.setText("Concluido.");
-                       continuar01.setVisibility(View.VISIBLE);
+                        statusbarra.setText("Concluido.");
+                        continuar01.setVisibility(View.VISIBLE);
                     }
                 });
             }
         }).start();
-        //FIM  BARRA DE PROGRESSO
-
-    }else if( edtmdx.getText().length() == 0 || edtmdy.getText().length()==0 || edtnsd.getText().length()==0 ){ //verifico se algum dos campos está vazio
-         if (edtmdx.getText().length() == 0) {
-             Toast toast = Toast.makeText(getApplicationContext(),
-                     "Se não houver alguma solicitção insira 0",
-                     Toast.LENGTH_LONG);
-             toast.setGravity(Gravity.CENTER, 0, 0);
-
-             toast.show();
-             edtmdx.setError("Campo Vazio");
-         }
-
-    if (edtmdy.getText().length() == 0) {
-        Toast toast = Toast.makeText(getApplicationContext(),
-                "Se não houver alguma solicitção insira 0",
-                Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-
-        toast.show();
-        edtmdy.setError("Campo Vazio");
     }
-
-    if (edtnsd.getText().length() == 0){
-            Toast toast = Toast.makeText (getApplicationContext (),
-                    "Se não houver alguma solicitção insira 0",
-                    Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0,0);
-
-            toast.show ();
-            edtnsd.setError("Campo Vazio");
-
-    }
-        }
-    }
-      //FIM BOTÃO ANALISAR
 
     //botão chamar tela zx
-    public void chamarzx (View view){
-        Intent it = new Intent(MainActivity.this, telazx.class);
+    public void chamarzx(View view) {
+        Intent it = new Intent(MainActivity.this, Zx.class);
         startActivity(it);
         load.setVisibility(View.INVISIBLE); //deixando a barra de progresso invisivel
         statusbarra.setVisibility(View.INVISIBLE); //deixandoo satatus da barra invisivel
         continuar01.setVisibility(View.INVISIBLE); //deixando o botao prosseguir invisivel
-        progresso=0; //zerando o progresso da barra
+        progresso = 0; //zerando o progresso da barra
         statusbarra.setText("Analisando...");
-
-
     }
-    // fim chamada telazx
-    }
+    // fim chamada Zx
+}
 
 
 

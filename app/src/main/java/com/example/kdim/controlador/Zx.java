@@ -7,25 +7,25 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.kdim.Global;
 import com.example.kdim.R;
+import com.example.kdim.Util;
+import com.example.kdim.modelo.Aco;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class telazx extends AppCompatActivity {
+public class Zx extends AppCompatActivity {
 
     private TextView testemaior;
     private TextView msdformulaz;
     private TextView ya1formulaz;
     private TextView fyformulaz;
-    private  TextView ztelaz;
+    private TextView ztelaz;
     private Button botaovoltartelaz;
-   private Button botaoprosseguirtelaz;
+    private Button botaoprosseguirtelaz;
     private double maiormomento = 0;
 
     @Override
@@ -38,28 +38,28 @@ public class telazx extends AppCompatActivity {
         fyformulaz = (TextView) findViewById(R.id.fyformulaz);
         ztelaz = (TextView) findViewById(R.id.ztelaz);
         botaoprosseguirtelaz = (Button) findViewById(R.id.botaoprosseguirtelaz);
-       botaovoltartelaz = (Button) findViewById(R.id.botaovoltartelaz);
+        botaovoltartelaz = (Button) findViewById(R.id.botaovoltartelaz);
 
-        Global global = (Global) getApplicationContext();
-
-
-        if (global.getMdx()>global.getMdy() ){
-            maiormomento=global.getMdx();
-        }else if (global.getMdy()>global.getMdx()){
-            maiormomento= global.getMdy();
-        }else if (global.getMdx()==global.getMdy()){
-            maiormomento= global.getMdy();
+        if (Util.solicitacao.getMdx() > Util.solicitacao.getMdy()) {
+            maiormomento = Util.solicitacao.getMdx();
+        } else if (Util.solicitacao.getMdy() > Util.solicitacao.getMdx()) {
+            maiormomento = Util.solicitacao.getMdy();
+        } else if (Util.solicitacao.getMdx() == Util.solicitacao.getMdy()) {
+            maiormomento = Util.solicitacao.getMdy();
         }
 
-        double zxarredondado = global.getZxcalc();
-        BigDecimal bd = new BigDecimal(zxarredondado).setScale(2, RoundingMode.HALF_EVEN);
+        Aco aco = Util.getInstanciaAcoDao().getAco(Util.solicitacao.getNomeAco());
 
-       ya1formulaz.setText(String.valueOf(" x " + global.ya1));
-        fyformulaz.setText(String.valueOf(global.fy)+"Mpa");
-        msdformulaz.setText(String.valueOf(maiormomento+"x10^6 N.mm"));
-        ztelaz.setText(String.valueOf(bd.doubleValue()+"cm³"));
+        BigDecimal bd = new BigDecimal(aco.calcularZ(Util.solicitacao)).setScale(2, RoundingMode.HALF_EVEN);
 
-        testemaior.setText("O maior momento está aplicado no "+String.valueOf(global.getEixomaior())+"\n"+" Msd = "+ maiormomento +" kN.m");
+        ya1formulaz.setText(String.valueOf(" x " + Util.Y_A_1));
+        fyformulaz.setText(String.valueOf(aco.getTensaoDeEscoamento()) + "Mpa");
+        msdformulaz.setText(String.valueOf(maiormomento + "x10^6 N.mm"));
+        ztelaz.setText(String.valueOf(bd.doubleValue() + "cm³"));
+
+        String eixo = aco.isEixoX() ? "Eixo X" : "Eixo Y";
+
+        testemaior.setText("O maior momento está aplicado no " + String.valueOf(eixo) + "\n" + " Msd = " + maiormomento + " kN.m");
     }
 
 
@@ -74,20 +74,20 @@ public class telazx extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
 
         }
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent itconfug = new Intent(telazx.this, telaconfig.class);
+            Intent itconfug = new Intent(Zx.this, Configuracao.class);
             startActivity(itconfug);
-        }else if (id==R.id.botsobre){
-            Intent itsobre = new Intent(telazx.this, telasobre.class);
+        } else if (id == R.id.botsobre) {
+            Intent itsobre = new Intent(Zx.this, Sobre.class);
             startActivity(itsobre);
-        }else if (id== R.id.botajuda){
-            Intent itajuda = new Intent(telazx.this, telaajuda.class);
+        } else if (id == R.id.botajuda) {
+            Intent itajuda = new Intent(Zx.this, Ajuda.class);
             startActivity(itajuda);
 
         }
@@ -96,8 +96,8 @@ public class telazx extends AppCompatActivity {
     }
     //fim do menu
 
-    public void voltartelaz(View view){
-        //Intent it = new Intent(telazx.this, MainActivity.class);
+    public void voltartelaz(View view) {
+        //Intent it = new Intent(Zx.this, MainActivity.class);
         //startActivity(it);
         finish();
 

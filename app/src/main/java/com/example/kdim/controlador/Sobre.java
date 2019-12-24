@@ -11,7 +11,7 @@ import android.widget.ImageButton;
 
 import com.example.kdim.R;
 
-public class telasobre extends AppCompatActivity {
+public class Sobre extends AppCompatActivity {
     private ImageButton botfecharsobre;
 
 
@@ -21,7 +21,6 @@ public class telasobre extends AppCompatActivity {
         setContentView(R.layout.activity_telasobre);
         botfecharsobre = (ImageButton) findViewById(R.id.botfecharsobre);
     }
-
 
     //inicio do menu
     @Override
@@ -36,20 +35,20 @@ public class telasobre extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
 
         }
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent itconfug = new Intent(telasobre.this, telaconfig.class);
+            Intent itconfug = new Intent(Sobre.this, Configuracao.class);
             startActivity(itconfug);
-        }else if (id==R.id.botsobre){
-            Intent itsobre = new Intent(telasobre.this, telasobre.class);
+        } else if (id == R.id.botsobre) {
+            Intent itsobre = new Intent(Sobre.this, Sobre.class);
             startActivity(itsobre);
-        }else if (id== R.id.botajuda){
-            Intent itajuda = new Intent(telasobre.this, telaajuda.class);
+        } else if (id == R.id.botajuda) {
+            Intent itajuda = new Intent(Sobre.this, Ajuda.class);
             startActivity(itajuda);
 
         }
@@ -59,10 +58,8 @@ public class telasobre extends AppCompatActivity {
     //fim do menu
 
 
-    public  void fecharsobre (View view){
-
+    public void fecharsobre(View view) {
         finish();
-
     }
 
 }

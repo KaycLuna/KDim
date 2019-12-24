@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 import com.example.kdim.R;
 
-public class telaajuda extends AppCompatActivity {
+public class Ajuda extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +38,13 @@ public class telaajuda extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent itconfug = new Intent(telaajuda.this, telaconfig.class);
+            Intent itconfug = new Intent(Ajuda.this, Configuracao.class);
             startActivity(itconfug);
         }else if (id==R.id.botsobre){
-            Intent itsobre = new Intent(telaajuda.this, telasobre.class);
+            Intent itsobre = new Intent(Ajuda.this, Sobre.class);
             startActivity(itsobre);
         }else if (id== R.id.botajuda){
-            Intent itajuda = new Intent(telaajuda.this, telaajuda.class);
+            Intent itajuda = new Intent(Ajuda.this, Ajuda.class);
             startActivity(itajuda);
 
         }

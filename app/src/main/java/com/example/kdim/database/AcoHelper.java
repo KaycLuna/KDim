@@ -14,8 +14,6 @@ public class AcoHelper extends SQLiteOpenHelper {
                 "tensao_escoamento DOUBLE NOT NULL" +
             ");";
 
-
-
     public AcoHelper(Context context) {
         super(context, "bd_aco", null, 1);
     }
