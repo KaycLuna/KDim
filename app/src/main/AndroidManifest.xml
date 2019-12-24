@@ -9,10 +9,14 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".controlador.telaajuda" />
-        <activity android:name=".controlador.telaconfig" />
-        <activity android:name=".controlador.telasobre" />
-        <activity android:name=".controlador.telazx" />
+        <activity android:name=".controlador.telaajuda"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".controlador.telaconfig"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".controlador.telasobre"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".controlador.telazx"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".controlador.MainActivity"
             android:label="@string/app_name"

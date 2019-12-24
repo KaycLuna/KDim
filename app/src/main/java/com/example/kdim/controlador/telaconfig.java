@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -21,6 +24,8 @@ public class telaconfig extends AppCompatActivity {
     private  TextView valorya2;
     private  TextView valordee;
     private TextView valordeg;
+    private Button botaookconfig;
+
 
 
 
@@ -32,6 +37,9 @@ public class telaconfig extends AppCompatActivity {
         valorya2 = (TextView) findViewById(R.id.valorya2) ;
         valordee = (TextView) findViewById(R.id.valordee);
         valordeg = (TextView) findViewById(R.id.valordeg);
+        botaookconfig = (Button) findViewById(R.id.botaookconfig);
+
+
         Global global = (Global) getApplicationContext();
             valorya1.setText(String.valueOf(global.ya1));
             valorya2.setText(String.valueOf(global.ya2));
@@ -71,5 +79,13 @@ public class telaconfig extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    //fim do menu
+
+       //fim do menu
+
+    public void SalvareFechar(View view){
+
+        finish();
+
+    }
+
 }

@@ -51,7 +51,8 @@
             android:text="Versão 1.0 - Dezembro de 2019 \n (Build 1001)\n Aplicativo para verificação de viga-coluna\n Segundo a NBR8800/2008 \n
 Dados dos perfís disponibilizados pela Guerdal.\n
 
-Kayc Emmanuel de Luna Brito \n kayc.luna@aluno.fapce.edu.br
+\nKayc Emmanuel de Luna Brito \n kayclunabrito@gmail.com \n\n Apoio:\nAdriel Vieira Santos
+
 "
             android:textStyle="bold"
             tools:layout_editor_absoluteX="88dp"

@@ -1,14 +1,11 @@
 package com.example.kdim.controlador;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.os.Handler;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,10 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import com.example.kdim.Global;
 import com.example.kdim.R;
 import com.example.kdim.database.AcoHelper;
+import com.example.kdim.modelo.Aco;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         edtnsd = (EditText) findViewById(R.id.edtnsd);
         edtmdx = (EditText) findViewById(R.id.edtmdx);
         edtmdy = (EditText) findViewById(R.id.edtmdy);
-        testezx = (TextView) findViewById(R.id.testezx);
+
         load = (ProgressBar) findViewById(R.id.load);
         statusbarra = (TextView) findViewById(R.id.statusbarra);
         continuar01 = (Button) findViewById(R.id.continuar01);
@@ -93,9 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
        //criarConexao();
     }
-
-
-
 
     //inicio do menu
     @Override
@@ -135,23 +130,30 @@ public class MainActivity extends AppCompatActivity {
     // BOTÃO ANALISAR
     public void analisar(View view){
 
+        if( edtmdx.getText().length() != 0 && edtmdy.getText().length()!=0 && edtnsd.getText().length()!=0 ){ //Verifico se todos os campos não estão vazios
+
         Global global = (Global) getApplicationContext();
+        global.setMdx(Double.valueOf(edtmdx.getText().toString())); //jogo o valor de mdx pra global
+        global.setMdy(Double.valueOf(edtmdy.getText().toString())); //jogo p valor de mdy pra global
+        global.setNsd(Double.valueOf(edtnsd.getText().toString())); // passo o valor de nsd pra global
 
-        double mdx = Double.valueOf(edtmdx.getText().toString());
-        double mdy = Double.valueOf(edtmdy.getText().toString());
-        double fy = 345;
+        /*if (global.getMdx()>=global.getMdy()) {
+            zx = ((global.getMdx() * Math.pow(10, 6)) *global.ya1) / (global.fy * 1000);
 
-        if (mdx>=mdy) {
-            zx = ((mdx * Math.pow(10, 6)) *global.ya1) / (fy * 1000);
-            testezx.setText(String.valueOf(zx));
             global.setZxcalc(zx);
+            global.setEixomaior("Eixo X");
 
-        }else if (mdy>mdx){
 
-             zx = ((mdy * Math.pow(10, 6)) * global.ya1) / (fy * 1000);
-            testezx.setText(String.valueOf(zx));
+        }else if (global.getMdy()>global.getMdx()){
+
+             zx = ((global.getMdy() * Math.pow(10, 6)) * global.ya1) / (global.fy * 1000);
+
             global.setZxcalc(zx);
-        }
+            global.setEixomaior("Eixo Y");
+
+        }*/
+        Aco aco = new Aco();
+        aco.CalcularZ();
 
         load.setVisibility(View.VISIBLE); //deixando a barra de progresso visivel
         statusbarra.setVisibility(View.VISIBLE); //deixandoo satatus da barra visivel
@@ -162,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 while (progresso< 100){
                     progresso++;
-                    android.os.SystemClock.sleep(15);
+                    android.os.SystemClock.sleep(10);
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -180,6 +182,39 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
         //FIM  BARRA DE PROGRESSO
+
+    }else if( edtmdx.getText().length() == 0 || edtmdy.getText().length()==0 || edtnsd.getText().length()==0 ){ //verifico se algum dos campos está vazio
+         if (edtmdx.getText().length() == 0) {
+             Toast toast = Toast.makeText(getApplicationContext(),
+                     "Se não houver alguma solicitção insira 0",
+                     Toast.LENGTH_LONG);
+             toast.setGravity(Gravity.CENTER, 0, 0);
+
+             toast.show();
+             edtmdx.setError("Campo Vazio");
+         }
+
+    if (edtmdy.getText().length() == 0) {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "Se não houver alguma solicitção insira 0",
+                Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+
+        toast.show();
+        edtmdy.setError("Campo Vazio");
+    }
+
+    if (edtnsd.getText().length() == 0){
+            Toast toast = Toast.makeText (getApplicationContext (),
+                    "Se não houver alguma solicitção insira 0",
+                    Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0,0);
+
+            toast.show ();
+            edtnsd.setError("Campo Vazio");
+
+    }
+        }
     }
       //FIM BOTÃO ANALISAR
 
@@ -187,15 +222,15 @@ public class MainActivity extends AppCompatActivity {
     public void chamarzx (View view){
         Intent it = new Intent(MainActivity.this, telazx.class);
         startActivity(it);
+        load.setVisibility(View.INVISIBLE); //deixando a barra de progresso invisivel
+        statusbarra.setVisibility(View.INVISIBLE); //deixandoo satatus da barra invisivel
+        continuar01.setVisibility(View.INVISIBLE); //deixando o botao prosseguir invisivel
+        progresso=0; //zerando o progresso da barra
+        statusbarra.setText("Analisando...");
+
 
     }
     // fim chamada telazx
-
-
-
-
-
-
     }
 
 
